@@ -4,9 +4,9 @@
 An e-commerce website built using React.js with voice chat and fuzzy search, with real transactions implemented.
 
 ## Instructions To Run
-The website and the database have been completely hosted online. Use the link https://tsunami-deal.herokuapp.com/ to run the application directly on your browser.
+The website and the database have been completely hosted online. Use the link /<link/> to run the application directly on your browser.
 
-To view the source, clone the repository https://github.com/harshithakapa1/DBMS-Project. Additionally, to run it locally, follow the steps below:
+To run it locally, follow the steps below:
 1. Open a terminal window and run the following:
 ```
 $ npm install
@@ -20,8 +20,3 @@ PostgreSQL has been chosen as the most suitable database system for the required
 
 ## Tech Stack Used
 PERN stack with Firebase and Heroku services.
-
-### Authors
-* CS19B012 Debeshee
-* CS19B021 Harshitha
-* CS19B037 Shreetesh
