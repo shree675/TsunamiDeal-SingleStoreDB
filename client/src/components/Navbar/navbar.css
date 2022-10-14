@@ -1,0 +1,23 @@
+.buyer-navbar {
+  width: 100%;
+  height: 60px !important;
+  background-color: #b0c4b1;
+  padding: 0;
+  display: flex !important;
+  justify-content: space-between;
+}
+
+.buyer-navbar-logo {
+  float: left;
+  margin: 10px;
+  /* width: 20%; */
+}
+
+.buyer-navbar-icons {
+  float: right;
+  margin: 5px;
+  text-align: right;
+  padding: 0px;
+  padding-right: 15px;
+  width: 20%;
+}
