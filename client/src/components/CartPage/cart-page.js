@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Card = (props) => {
   const removeItem = async () => {
     // console.log(props.cartId);
-    var query = `DELETE FROM "cart_items" WHERE id = ${props.cartId}`;
+    var query = `DELETE FROM cart_items WHERE id = ${props.cartId}`;
     // console.log(query);
     const response = await queryExchange(query);
     if (response.name && response.name === "error") {
@@ -78,13 +78,14 @@ const CartPage = () => {
       toast.info("Fetching your cart...", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      var query = `SELECT id FROM "buyers" WHERE phone_number = '${localStorage.getItem(
+      var query = `SELECT id FROM buyers WHERE phone_number = '${localStorage.getItem(
         "phone"
       )}'`;
       var id = await queryExchange(query);
       id = id.rows[0].id;
       setBuyerId(id);
-      var query = `SELECT * FROM "cart_items" WHERE user_id = ${id}`;
+      var query = `SELECT * FROM cart_items WHERE user_id = ${id}`;
+      console.log(id);
       var cartItems = await queryExchange(query);
       cartItems = cartItems.rows;
       if (cartItems.length === 0) {
@@ -100,7 +101,7 @@ const CartPage = () => {
       }
       inItems = inItems.slice(0, -1);
       inItems = "(" + inItems + ")";
-      var query = `SELECT * FROM "products" WHERE id IN ${inItems}`;
+      var query = `SELECT * FROM products WHERE id IN ${inItems}`;
       console.log(query);
       var products = await queryExchange(query);
       console.log(products.rows);
@@ -110,7 +111,7 @@ const CartPage = () => {
       }
       inDiscounts = inDiscounts.slice(0, -1);
       inDiscounts = "(" + inDiscounts + ")";
-      var query = `SELECT * FROM "discounts" WHERE id IN ${inDiscounts}`;
+      var query = `SELECT * FROM discounts WHERE id IN ${inDiscounts}`;
       console.log(query);
 
       var discounts = await queryExchange(query);

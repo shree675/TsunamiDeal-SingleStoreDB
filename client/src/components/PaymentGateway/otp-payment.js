@@ -119,7 +119,7 @@ function OtpPayment({ match }) {
         toast.info("Checking availability of your items...", {
           position: toast.POSITION.TOP_RIGHT,
         });
-        var query = `SELECT id FROM "buyers" WHERE phone_number = '${localStorage.getItem(
+        var query = `SELECT id FROM buyers WHERE phone_number = '${localStorage.getItem(
           "phone"
         )}'`;
         var response = await queryExchange(query);
@@ -139,7 +139,7 @@ function OtpPayment({ match }) {
         }
         inItems = inItems.slice(0, -1);
         inItems = "(" + inItems + ")";
-        var query = `SELECT * FROM "products" WHERE id IN ${inItems}`;
+        var query = `SELECT * FROM products WHERE id IN ${inItems}`;
         response = await queryExchange(query);
         var products = response.rows;
         for (var i = 0; i < products.length; i++) {
@@ -154,7 +154,11 @@ function OtpPayment({ match }) {
         });
 
         // start transaction
-        query = `BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;\nSAVEPOINT begin_save_point;\n`;
+        query = `START TRANSACTION`;
+        response = await queryExchange(query);
+        query = `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`;
+        response = await queryExchange(query);
+        query = `SAVEPOINT begin_save_point`;
         response = await queryExchange(query);
 
         var timestamp = new Date().toISOString();
@@ -162,28 +166,32 @@ function OtpPayment({ match }) {
         var paymentMethod = match.params.id === "0" ? "card" : "wallet";
         var orderId;
         await queryExchange(
-          `INSERT INTO "orders"("user_id", "status", "created_at", "arriving_on", "order_total", "billing_address", "payment_method") VALUES (${buyerId}, ('on_the_way'), '${timestamp}', '${arrivalTime}', ${total}, ${addressId}, ('${paymentMethod}'));\n`
+          `INSERT INTO orders(user_id, status, created_at, arriving_on, order_total, billing_address, payment_method) VALUES (${buyerId}, ('on_the_way'), '${timestamp}', '${arrivalTime}', ${total}, ${addressId}, ('${paymentMethod}'));\n`
         );
         response = await queryExchange(
-          `SELECT id FROM "orders" WHERE user_id = ${buyerId} AND created_at = '${timestamp}'`
+          `SELECT id FROM orders WHERE user_id = ${buyerId} AND created_at = '${timestamp}'`
         );
         orderId = response.rows[0].id;
         items.forEach((element, index) => {
-          query += `INSERT INTO "order_items"("order_id", "product_id", "quantity") VALUES (${orderId}, ${element.id}, ${element.quantity});\n`;
+          query = `INSERT INTO order_items(order_id, product_id, quantity) VALUES (${orderId}, ${element.id}, ${element.quantity});\n`;
         });
+        await queryExchange(query);
         if (match.params.id === "1") {
-          query += `UPDATE "buyers" SET wallet_balance = wallet_balance - ${total} WHERE id = ${buyerId};\n`;
+          query = `UPDATE buyers SET wallet_balance = wallet_balance - ${total} WHERE id = ${buyerId};\n`;
+          await queryExchange(query);
         }
-        sellers.forEach((element, index) => {
-          query += `UPDATE "sellers" SET account_balance = account_balance + ${element.price} WHERE id = ${element.id};\n`;
+        sellers.forEach(async (element, index) => {
+          query = `UPDATE sellers SET account_balance = account_balance + ${element.price} WHERE id = ${element.id};\n`;
+          await queryExchange(query);
         });
-        items.forEach((element, index) => {
-          query += `UPDATE "products" SET left_in_stock = left_in_stock - ${element.quantity} WHERE id = ${element.id};\n`;
+        items.forEach(async (element, index) => {
+          query = `UPDATE products SET left_in_stock = left_in_stock - ${element.quantity} WHERE id = ${element.id};\n`;
+          await queryExchange(query);
         });
-        query += `DELETE FROM "cart_items" WHERE user_id = ${buyerId};\n`;
-        query += `COMMIT;`;
+        query = `DELETE FROM cart_items WHERE user_id = ${buyerId};\n`;
+        await queryExchange(query);
+        query = `COMMIT;`;
         response = await queryExchange(query);
-        console.log(query);
         if (response.name && response.name === "error") {
           toast.error("Transaction failed. Rolling back...", {
             position: toast.POSITION.TOP_RIGHT,

@@ -28,13 +28,13 @@ export const LandingPage = () => {
       localStorage.getItem("userType") !== undefined &&
       localStorage.getItem("userType") === "seller"
     ) {
-      window.location = "/seller-home";
+      window.location.href = "/seller-home";
     } else if (
       localStorage.getItem("userType") !== null &&
       localStorage.getItem("userType") !== undefined &&
       localStorage.getItem("userType") === "buyer"
     ) {
-      window.location = "/buyer-home";
+      window.location.href = "/buyer-home";
     }
   }, []);
 

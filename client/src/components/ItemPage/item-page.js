@@ -40,17 +40,18 @@ const ItemPage = () => {
     toast.info("Checking inventory...", {
       position: toast.POSITION.TOP_RIGHT,
     });
-    var query = `SELECT id FROM "buyers" WHERE phone_number = '${localStorage.getItem(
+    var query = `SELECT id FROM buyers WHERE phone_number = '${localStorage.getItem(
       "phone"
     )}'`;
     var id = await queryExchange(query);
     id = id.rows[0].id;
+    console.log(id);
     setBuyerId(id);
-    var query = `SELECT left_in_stock FROM "products" WHERE id=${location.state.id}`;
+    var query = `SELECT left_in_stock FROM products WHERE id=${location.state.id}`;
     var left_in_stock = await queryExchange(query);
     left_in_stock = left_in_stock.rows[0].left_in_stock;
     if (left_in_stock >= quantity) {
-      var query = `INSERT INTO "cart_items" ("user_id", "product_id", "quantity") VALUES (${id}, ${location.state.id}, ${quantity})`;
+      var query = `INSERT INTO cart_items (user_id, product_id, quantity) VALUES (${id}, ${location.state.id}, ${quantity})`;
       const response = await queryExchange(query);
       if (response.name && response.name === "error") {
         console.log(response);

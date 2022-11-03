@@ -95,7 +95,7 @@ const Card = (props) => {
 
   const removeItem = async (e) => {
     e.preventDefault();
-    const query = `DELETE from "products" WHERE id = ${id}`;
+    const query = `DELETE from products WHERE id = ${id}`;
     await queryExchange(query)
       .then(() => {
         toast.success("Item removed successfully", {
@@ -127,7 +127,7 @@ const Card = (props) => {
       toast.info("Updating item", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      var query = `SELECT id FROM "discounts" WHERE name='${discount}'`;
+      var query = `SELECT id FROM discounts WHERE name='${discount}'`;
       var discountId = await queryExchange(query);
       try {
         discountId = discountId.rows[0].id;
@@ -135,7 +135,7 @@ const Card = (props) => {
         discountId = "NULL";
       }
       console.log(discountId);
-      var query = `UPDATE "products" SET "category" = ('${category}'), "name" = '${prodName}', "image" = '${image}', "left_in_stock" = ${quantity}, "price" = ${price}, "discount_id" = '${discountId}' WHERE id = ${id}`;
+      var query = `UPDATE products SET category = ('${category}'), name = '${prodName}', image = '${image}', left_in_stock = ${quantity}, price = ${price}, discount_id = '${discountId}' WHERE id = ${id}`;
       const response = await queryExchange(query);
       if (response.name && response.name === "error") {
         console.log(response);
@@ -246,7 +246,7 @@ function SellerUpdatePage() {
       toast.info("Fetching items...", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      var query = `SELECT id FROM "sellers" WHERE phone_number = '${localStorage.getItem(
+      var query = `SELECT id FROM sellers WHERE phone_number = '${localStorage.getItem(
         "phone"
       )}'`;
       var sellerId = await queryExchange(query);
@@ -255,13 +255,13 @@ function SellerUpdatePage() {
 
       var discounts = new Map();
 
-      query = `SELECT * FROM "discounts"`;
+      query = `SELECT * FROM discounts`;
       const result = await queryExchange(query);
       result.rows.forEach((element) => {
         discounts.set(element.id, element.name);
       });
 
-      query = `SELECT * FROM "products" WHERE seller_id = '${sellerId}'`;
+      query = `SELECT * FROM products WHERE seller_id = '${sellerId}'`;
       var items = await queryExchange(query);
 
       var tempItems = [];
@@ -289,10 +289,10 @@ function SellerUpdatePage() {
 
       setSellerItems(tempItems);
 
-      var query = `SELECT seller_name FROM "sellers" WHERE id = ${sellerId}`;
+      var query = `SELECT seller_name FROM sellers WHERE id = ${sellerId}`;
       var name = await queryExchange(query);
       setSellerName(name.rows[0].seller_name);
-      query = `SELECT account_balance FROM "sellers" WHERE id = ${sellerId}`;
+      query = `SELECT account_balance FROM sellers WHERE id = ${sellerId}`;
       var balance = await queryExchange(query);
       setBalance(balance.rows[0].account_balance);
     }

@@ -20,7 +20,7 @@ export async function searchFunction(
   console.log(sortPrice);
   searchString = searchString.toLowerCase();
 
-  var queryString = 'SELECT * FROM "products" ';
+  var queryString = "SELECT * FROM products ";
 
   // for ( let i = 0; i<categories.length; i++ ) {
   //   console.log(categories[i])

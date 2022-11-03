@@ -109,22 +109,25 @@ function BuyerHomePage() {
     { label: "StyleStop", value: "stylestop" },
   ];
 
+  var discountsMap = new Map();
+
   useEffect(() => {
     async function fetchDetails() {
       toast.info("Fetching items...", {
         position: toast.POSITION.TOP_RIGHT,
       });
+
       var results = sessionStorage.getItem("search_results");
-      var query = `SELECT * FROM "discounts"`;
+      var query = `SELECT * FROM discounts`;
       var discounts = await queryExchange(query);
-      var discountsMap = new Map();
+      // var discountsMap = new Map();
       discounts.rows.forEach((discount) => {
         discountsMap.set(discount.id, discount.name);
       });
       setDiscounts(discountsMap);
 
       if (results === "" || results === "[]") {
-        var query = `SELECT * FROM "products"`;
+        var query = `SELECT * FROM products`;
         var list = await queryExchange(query);
         setItems(list.rows);
       } else {

@@ -1,105 +1,105 @@
-DROP TABLE IF EXISTS "buyers" CASCADE;
-CREATE TABLE "buyers" (
-  "id" SERIAL PRIMARY KEY,
-  "phone_number" char(10),
-  "first_name" varchar,
-  "last_name" varchar,
-  "wallet_balance" decimal CHECK("wallet_balance" >= 0.0)
+DROP TABLE IF EXISTS buyers;
+CREATE TABLE `buyers` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `phone_number` char(10),
+  `first_name` varchar(255),
+  `last_name` varchar(255),
+  `wallet_balance` decimal
 );
 
-DROP TABLE IF EXISTS "addresses" CASCADE;
-CREATE TABLE "addresses" (
-  "id" SERIAL PRIMARY KEY,
-  "user_id" int,
-  "address_line1" varchar,
-  "address_line2" varchar,
-  "city" varchar,
-  "pincode" varchar,
-  "country" varchar
+DROP TABLE IF EXISTS addresses;
+CREATE TABLE `addresses` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `user_id` bigint,
+  `address_line1` varchar(255),
+  `address_line2` varchar(255),
+  `city` varchar(255),
+  `pincode` varchar(255),
+  `country` varchar(255)
 );
 
-DROP TABLE IF EXISTS "payment_cards" CASCADE;
-CREATE TABLE "payment_cards" (
-  "id" SERIAL PRIMARY KEY,
-  "user_id" int,
-  "name_on_card" varchar,
-  "card_number" char(16),
-  "cvv" varchar
-);
- 
-DROP TABLE IF EXISTS "order_items" CASCADE;
-CREATE TABLE "order_items" (
-  "id" SERIAL PRIMARY KEY,
-  "order_id" int,
-  "product_id" int,
-  "quantity" int DEFAULT 1 CHECK("quantity" > 0)
+DROP TABLE IF EXISTS payment_cards;
+CREATE TABLE `payment_cards` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `user_id` bigint,
+  `name_on_card` varchar(255),
+  `card_number` char(16),
+  `cvv` varchar(255)
 );
 
-DROP TABLE IF EXISTS "orders" CASCADE;
-CREATE TABLE "orders" (
-  "id" SERIAL PRIMARY KEY,
-  "user_id" int NOT NULL,
-  "status" order_status,
-  "created_at" timestamp,
-  "arriving_on" timestamp,
-  "order_total" decimal,
-  "billing_address" int,
-  "payment_method" payment_options
+DROP TABLE IF EXISTS order_items;
+CREATE TABLE `order_items` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `order_id` bigint,
+  `product_id` bigint,
+  `quantity` bigint DEFAULT 1
 );
 
-DROP TABLE IF EXISTS "products" CASCADE;
-CREATE TABLE "products" (
-  "id" SERIAL PRIMARY KEY,
-  "name" varchar,
-  "image" varchar,
-  "description" text,
-  "category" products_categories,
-  "brand" brands,
-  "seller_id" int NOT NULL,
-  "price" decimal CHECK("price" > 0.0),
-  "left_in_stock" int CHECK("left_in_stock" >= 0),
-  "discount_id" int
+DROP TABLE IF EXISTS orders;
+CREATE TABLE `orders` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  `status` ENUM ("on_the_way", "delivered", "cancelled"),
+  `created_at` varchar(40),
+  `arriving_on` varchar(40),
+  `order_total` decimal,
+  `billing_address` bigint,
+  `payment_method` ENUM ("wallet", "card")
 );
 
-DROP TABLE IF EXISTS "discounts" CASCADE;
-CREATE TABLE "discounts" (
-  "id" SERIAL PRIMARY KEY,
-  "name" varchar,
-  "percent" decimal CHECK("percent" >= 0.0)
+DROP TABLE IF EXISTS products;
+CREATE TABLE `products` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `name` varchar(255),
+  `image` varchar(255),
+  `description` text,
+  `category` ENUM ('furniture', 'lighting', 'plants', 'show_pieces'),
+  `brand` ENUM ('home_centre', 'ddecor', 'stylestop'),
+  `seller_id` bigint NOT NULL,
+  `price` decimal,
+  `left_in_stock` bigint,
+  `discount_id` bigint
 );
 
-DROP TABLE IF EXISTS "cart_items" CASCADE;
-CREATE TABLE "cart_items" (
-  "id" SERIAL PRIMARY KEY,
-  "user_id" int,
-  "product_id" int,
-  "quantity" int CHECK("quantity" > 0)
+DROP TABLE IF EXISTS discounts;
+CREATE TABLE `discounts` (
+  `id` bigint PRIMARY KEY,
+  `name` varchar(255),
+  `percent` decimal
 );
 
-DROP TABLE IF EXISTS "sellers" CASCADE;
-CREATE TABLE "sellers" (
-  "id" SERIAL PRIMARY KEY,
-  "phone_number" char(10),
-  "seller_name" varchar,
-  "account_balance" decimal CHECK("account_balance" > 0.0)
+DROP TABLE IF EXISTS cart_items;
+CREATE TABLE `cart_items` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `user_id` bigint,
+  `product_id` bigint,
+  `quantity` bigint
 );
 
-ALTER TABLE "order_items" ADD FOREIGN KEY ("order_id") REFERENCES "orders" ("id");
+DROP TABLE IF EXISTS sellers;
+CREATE TABLE `sellers` (
+  `id` bigint PRIMARY KEY AUTO_INCREMENT,
+  `phone_number` char(10),
+  `seller_name` varchar(255),
+  `account_balance` decimal
+);
 
-ALTER TABLE "order_items" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+ALTER TABLE `order_items` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
 
-ALTER TABLE "products" ADD FOREIGN KEY ("seller_id") REFERENCES "sellers" ("id");
+ALTER TABLE `order_items` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
 
-ALTER TABLE "addresses" ADD FOREIGN KEY ("user_id") REFERENCES "buyers" ("id");
+ALTER TABLE `products` ADD FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`);
 
-ALTER TABLE "products" ADD FOREIGN KEY ("discount_id") REFERENCES "discounts" ("id");
+ALTER TABLE `addresses` ADD FOREIGN KEY (`user_id`) REFERENCES `buyers` (`id`);
 
-ALTER TABLE "payment_cards" ADD FOREIGN KEY ("user_id") REFERENCES "buyers" ("id");
+ALTER TABLE `products` ADD FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`id`);
 
-ALTER TABLE "cart_items" ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+ALTER TABLE `buyers` ADD FOREIGN KEY (`id`) REFERENCES `payment_cards` (`user_id`);
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("user_id") REFERENCES "buyers" ("id");
+ALTER TABLE `cart_items` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
 
-ALTER TABLE "orders" ADD FOREIGN KEY ("billing_address") REFERENCES "addresses" ("id");
+ALTER TABLE `orders` ADD FOREIGN KEY (`user_id`) REFERENCES `buyers` (`id`);
 
-ALTER TABLE "cart_items" ADD FOREIGN KEY ("user_id") REFERENCES "buyers" ("id");
+ALTER TABLE `orders` ADD FOREIGN KEY (`billing_address`) REFERENCES `addresses` (`id`);
+
+ALTER TABLE `cart_items` ADD FOREIGN KEY (`user_id`) REFERENCES `buyers` (`id`);

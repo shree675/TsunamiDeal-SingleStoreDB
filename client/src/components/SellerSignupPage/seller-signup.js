@@ -54,10 +54,10 @@ function AuthenticationPage({ match }) {
                   toast.info("Creating records...", {
                     position: toast.POSITION.TOP_RIGHT,
                   });
-                  var query = `INSERT INTO "sellers"("phone_number", "seller_name", "account_balance") VALUES ('${phone}', '${name}', 1000);`;
+                  var query = `INSERT INTO sellers(phone_number, seller_name, account_balance) VALUES ('${phone}', '${name}', 1000);`;
                   await queryExchange(query);
 
-                  query = `SELECT id FROM "sellers" WHERE phone_number = '${phone}'`;
+                  query = `SELECT id FROM sellers WHERE phone_number = '${phone}'`;
                   var userId = await queryExchange(query);
                   userId = userId.rows[0].id;
 

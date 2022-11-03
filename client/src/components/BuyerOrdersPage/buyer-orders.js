@@ -15,18 +15,18 @@ const OrderCard = (props) => {
     var priceToAdd = 0;
     var quantityToAdd = props.quantity;
     var buyerId;
-    var query = `SELECT id FROM "buyers" WHERE phone_number = '${localStorage.getItem(
+    var query = `SELECT id FROM buyers WHERE phone_number = '${localStorage.getItem(
       "phone"
     )}'`;
     buyerId = await queryExchange(query);
     buyerId = buyerId.rows[0].id;
 
-    query = `SELECT price, discount_id FROM "products" WHERE id=${props.productId}`;
+    query = `SELECT price, discount_id FROM products WHERE id=${props.productId}`;
     var response = await queryExchange(query);
     var originalPrice = response.rows[0].price;
     var discountId = response.rows[0].discount_id;
 
-    query = `SELECT percent FROM "discounts" WHERE id=${discountId}`;
+    query = `SELECT percent FROM discounts WHERE id=${discountId}`;
     response = await queryExchange(query);
     var discount = parseFloat(response.rows[0].percent) / 100;
     priceToAdd = quantityToAdd * (originalPrice - originalPrice * discount);
@@ -35,12 +35,22 @@ const OrderCard = (props) => {
       position: toast.POSITION.TOP_RIGHT,
     });
     query = "";
-    query += `BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;\nSAVEPOINT cancel_save_point;\n`;
-    query += `UPDATE "products" SET left_in_stock = left_in_stock + ${quantityToAdd} WHERE id = ${props.productId};\n`;
-    query += `UPDATE "buyers" SET wallet_balance = wallet_balance + ${priceToAdd} WHERE id = ${buyerId};\n`;
-    query += `UPDATE "sellers" SET account_balance = account_balance - ${priceToAdd} WHERE id = ${props.sellerId};\n`;
-    query += `DELETE FROM "order_items" WHERE id = ${props.orderItemId};\n`;
-    query += `COMMIT;`;
+
+    query = `START TRANSACTION`;
+    response = await queryExchange(query);
+    query = `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`;
+    response = await queryExchange(query);
+    query = `SAVEPOINT cancel_save_point`;
+    response = await queryExchange(query);
+    query = `UPDATE products SET left_in_stock = left_in_stock + ${quantityToAdd} WHERE id = ${props.productId};\n`;
+    await queryExchange(query);
+    query = `UPDATE buyers SET wallet_balance = wallet_balance + ${priceToAdd} WHERE id = ${buyerId};\n`;
+    await queryExchange(query);
+    query = `UPDATE sellers SET account_balance = account_balance - ${priceToAdd} WHERE id = ${props.sellerId};\n`;
+    await queryExchange(query);
+    query = `DELETE FROM order_items WHERE id = ${props.orderItemId};\n`;
+    await queryExchange(query);
+    query = `COMMIT;`;
     response = await queryExchange(query);
     console.log(query);
     if (response.name && response.name === "error") {
@@ -82,18 +92,18 @@ const ArrivedCard = (props) => {
     var priceToAdd = 0;
     var quantityToAdd = props.quantity;
     var buyerId;
-    var query = `SELECT id FROM "buyers" WHERE phone_number = '${localStorage.getItem(
+    var query = `SELECT id FROM buyers WHERE phone_number = '${localStorage.getItem(
       "phone"
     )}'`;
     buyerId = await queryExchange(query);
     buyerId = buyerId.rows[0].id;
 
-    query = `SELECT price, discount_id FROM "products" WHERE id=${props.productId}`;
+    query = `SELECT price, discount_id FROM products WHERE id=${props.productId}`;
     var response = await queryExchange(query);
     var originalPrice = response.rows[0].price;
     var discountId = response.rows[0].discount_id;
 
-    query = `SELECT percent FROM "discounts" WHERE id=${discountId}`;
+    query = `SELECT percent FROM discounts WHERE id=${discountId}`;
     response = await queryExchange(query);
     var discount = parseFloat(response.rows[0].percent) / 100;
     priceToAdd = quantityToAdd * (originalPrice - originalPrice * discount);
@@ -102,14 +112,23 @@ const ArrivedCard = (props) => {
       position: toast.POSITION.TOP_RIGHT,
     });
     query = "";
-    query += `BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;\nSAVEPOINT return_save_point;\n`;
-    query += `UPDATE "products" SET left_in_stock = left_in_stock + ${quantityToAdd} WHERE id = ${props.productId};\n`;
-    query += `UPDATE "buyers" SET wallet_balance = wallet_balance + ${priceToAdd} WHERE id = ${buyerId};\n`;
-    query += `UPDATE "sellers" SET account_balance = account_balance - ${priceToAdd} WHERE id = ${props.sellerId};\n`;
-    query += `DELETE FROM "order_items" WHERE id = ${props.orderItemId};\n`;
-    query += `COMMIT;`;
+    // query += `START TRANSACTION;\nSET ISOLATION LEVEL REPEATABLE READ;\nSAVEPOINT return_save_point;\n`;
+    query = `START TRANSACTION`;
     response = await queryExchange(query);
-    console.log(query);
+    query = `SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`;
+    response = await queryExchange(query);
+    query = `SAVEPOINT return_save_point`;
+    response = await queryExchange(query);
+    query = `UPDATE products SET left_in_stock = left_in_stock + ${quantityToAdd} WHERE id = ${props.productId};\n`;
+    await queryExchange(query);
+    query = `UPDATE buyers SET wallet_balance = wallet_balance + ${priceToAdd} WHERE id = ${buyerId};\n`;
+    await queryExchange(query);
+    query = `UPDATE sellers SET account_balance = account_balance - ${priceToAdd} WHERE id = ${props.sellerId};\n`;
+    await queryExchange(query);
+    query = `DELETE FROM order_items WHERE id = ${props.orderItemId};\n`;
+    await queryExchange(query);
+    query = `COMMIT;`;
+    response = await queryExchange(query);
     if (response.name && response.name === "error") {
       toast.error("Transaction failed. Rolling back...", {
         position: toast.POSITION.TOP_RIGHT,
@@ -171,7 +190,7 @@ const BuyerOrdersPage = () => {
       toast.info("Getting your orders...", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      var query = `SELECT id FROM "buyers" WHERE phone_number = '${localStorage.getItem(
+      var query = `SELECT id FROM buyers WHERE phone_number = '${localStorage.getItem(
         "phone"
       )}'`;
       var buyerId = await queryExchange(query);
@@ -180,7 +199,7 @@ const BuyerOrdersPage = () => {
 
       var orders = [];
       var ordersMapping = new Map();
-      query = `SELECT * FROM "orders" WHERE user_id = ${buyerId}`;
+      query = `SELECT * FROM orders WHERE user_id = ${buyerId}`;
       var result = await queryExchange(query);
       for (let i = 0; i < result.rows.length; i++) {
         orders.push(result.rows[i]);
@@ -203,8 +222,10 @@ const BuyerOrdersPage = () => {
         inItems = "(" + inItems + ")";
         var inProductIds = "";
         var orderItems = [];
-        query = `SELECT * FROM "order_items" WHERE order_id IN ${inItems}`;
-        result = await queryExchange(query);
+        if (inItems !== "()") {
+          query = `SELECT * FROM order_items WHERE order_id IN ${inItems}`;
+          result = await queryExchange(query);
+        }
         for (let i = 0; i < result.rows.length; i++) {
           orderItems.push(result.rows[i]);
           inProductIds += result.rows[i].product_id;
@@ -212,8 +233,10 @@ const BuyerOrdersPage = () => {
         }
         inProductIds = inProductIds.slice(0, -1);
         inProductIds = "(" + inProductIds + ")";
-        query = `SELECT * FROM "products" WHERE id IN ${inProductIds}`;
-        result = await queryExchange(query);
+        if (inProductIds !== "()") {
+          query = `SELECT * FROM products WHERE id IN ${inProductIds}`;
+          result = await queryExchange(query);
+        }
         var products = result.rows;
         var productItems = new Map();
         products.map((product) => {
@@ -256,10 +279,12 @@ const BuyerOrdersPage = () => {
             addDays(order.created_at, 4) <= new Date() &&
             order.status === "on_the_way"
           ) {
-            query += `UPDATE "orders" SET status=('delivered') WHERE id=${order.id};\n`;
+            query += `UPDATE orders SET status=('delivered') WHERE id=${order.id};\n`;
           }
         });
-        await queryExchange(query);
+        if (query.length > 0) {
+          await queryExchange(query);
+        }
       }
     }
 

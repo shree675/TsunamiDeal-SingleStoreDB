@@ -41,7 +41,7 @@ const BuyerAccountPage = () => {
       toast.info("Getting your account details...", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      var query = `SELECT * FROM "buyers" WHERE phone_number = '${localStorage.getItem(
+      var query = `SELECT * FROM buyers WHERE phone_number = '${localStorage.getItem(
         "phone"
       )}'`;
       var id = await queryExchange(query);
@@ -50,11 +50,11 @@ const BuyerAccountPage = () => {
       setFirstName(id.rows[0].first_name);
       setLastName(id.rows[0].last_name);
 
-      query = `SELECT * FROM "addresses" WHERE user_id = '${id.rows[0].id}'`;
+      query = `SELECT * FROM addresses WHERE user_id = '${id.rows[0].id}'`;
       var tempAddresses = await queryExchange(query);
       setAddresses(tempAddresses.rows);
 
-      query = `SELECT name_on_card, card_number FROM "payment_cards" WHERE user_id = '${id.rows[0].id}'`;
+      query = `SELECT name_on_card, card_number FROM payment_cards WHERE user_id = '${id.rows[0].id}'`;
       var tempCards = await queryExchange(query);
       setNameOnCard(tempCards.rows[0].name_on_card);
       setCardNumber(tempCards.rows[0].card_number);
@@ -70,7 +70,7 @@ const BuyerAccountPage = () => {
       });
       return;
     }
-    var query = `UPDATE "buyers" SET wallet_balance = wallet_balance + ${amount} WHERE id = '${buyerId}'`;
+    var query = `UPDATE buyers SET wallet_balance = wallet_balance + ${amount} WHERE id = '${buyerId}'`;
     const response = await queryExchange(query);
     if (response.name && response.name === "error") {
       console.log(response);

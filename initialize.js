@@ -1,7 +1,7 @@
 // @ts-check
 
 const fs = require("fs");
-const pool = require("./db");
+const dbMain = require("./db");
 
 var query28 =
   'CREATE TABLE "test" ("id" SERIAL PRIMARY KEY, "timestamp" timestamp)';
@@ -80,24 +80,27 @@ var query36 = `select * from "products" where left_in_stock = 0;`;
 
 var query38 = `select * from "products" where brand in ('stylestop') order by price desc`;
 
-var initQueries = [query38];
+var queryx = "SELECT * FROM discounts";
+
+var initQueries = [queryx];
 
 (async () => {
-  // fs.readFileSync("./database_schemas/load_data.sql")
-  //   .toString()
-  //   .replace(/\r\n/g, "")
-  //   .split(";")
-  //   .forEach(function (query) {
-  //     if (query.length > 0) {
-  //       initQueries.push(query);
-  //     }
-  //   });
+  fs.readFileSync("./database_schemas/load_data.sql")
+    .toString()
+    .replace(/\r\n/g, "")
+    .split(";")
+    .forEach(function (query) {
+      if (query.length > 0) {
+        initQueries.push(query);
+      }
+    });
 
+  let conn = await dbMain();
   for (let i = 0; i < initQueries.length; i++) {
-    await pool
-      .query(initQueries[i])
-      .then((returned_data) => {
-        console.log("Returned from Database\n", returned_data);
+    await conn
+      .execute(initQueries[i])
+      .then((data) => {
+        // console.log("Returned from Database\n", data[0]);
         console.log(i, "successful");
       })
       .catch((error) => {
@@ -106,4 +109,5 @@ var initQueries = [query38];
         return;
       });
   }
+  conn.end();
 })();

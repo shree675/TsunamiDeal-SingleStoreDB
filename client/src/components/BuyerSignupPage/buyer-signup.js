@@ -150,10 +150,10 @@ function AuthenticationPage({ match }) {
                   toast.info("Creating records...", {
                     position: toast.POSITION.TOP_RIGHT,
                   });
-                  var query = `INSERT INTO "buyers"("phone_number", "first_name", "last_name", "wallet_balance") VALUES ('${phone}', '${firstName}', '${lastName}', 5000.1);`;
+                  var query = `INSERT INTO buyers(phone_number, first_name, last_name, wallet_balance) VALUES ('${phone}', '${firstName}', '${lastName}', 5000.1);`;
                   await queryExchange(query);
 
-                  query = `SELECT id FROM "buyers" WHERE phone_number = '${phone}'`;
+                  query = `SELECT id FROM buyers WHERE phone_number = '${phone}'`;
                   var userId = await queryExchange(query);
                   userId = userId.rows[0].id;
 
@@ -162,10 +162,10 @@ function AuthenticationPage({ match }) {
                   toast.info("Maintaining referential integrity...", {
                     position: toast.POSITION.TOP_RIGHT,
                   });
-                  query = `INSERT INTO "addresses"("user_id", "address_line1", "address_line2", "city", "pincode", "country") VALUES (${userId}, '${address1}', '${address2}', '${city}', '${pincode}', '${country}');`;
+                  query = `INSERT INTO addresses(user_id, address_line1, address_line2, city, pincode, country) VALUES (${userId}, '${address1}', '${address2}', '${city}', '${pincode}', '${country}');`;
                   await queryExchange(query);
 
-                  query = `INSERT INTO "payment_cards"("user_id", "name_on_card", "card_number", "cvv") VALUES (${userId}, '${cardName}', '${cardNumber}', '${encryptedHex}');`;
+                  query = `INSERT INTO payment_cards(user_id, name_on_card, card_number, cvv) VALUES (${userId}, '${cardName}', '${cardNumber}', '${encryptedHex}');`;
                   await queryExchange(query);
 
                   window.location.href = "/buyer-home";

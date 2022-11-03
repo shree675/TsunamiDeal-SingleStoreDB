@@ -14,17 +14,22 @@ async function main() {
       user: USER,
       password: PASSWORD,
       database: DATABASE,
+      // debug: true,
     });
 
     console.log("You have successfully connected to SingleStore.");
   } catch (err) {
     console.error("ERROR", err);
     process.exit(1);
-  } finally {
-    if (singleStoreConnection) {
-      await singleStoreConnection.end();
-    }
   }
+  // finally {
+  //   if (singleStoreConnection) {
+  //     await singleStoreConnection.end();
+  //   }
+  // }
+  return singleStoreConnection;
 }
 
-main();
+// main();
+
+module.exports = main;

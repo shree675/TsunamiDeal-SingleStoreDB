@@ -50,17 +50,17 @@ const PaymentPage = () => {
       toast.info("Getting your details...", {
         position: toast.POSITION.TOP_RIGHT,
       });
-      var query = `SELECT wallet_balance FROM "buyers" WHERE "id" = ${location.state.buyer_id}`;
+      var query = `SELECT wallet_balance FROM buyers WHERE id = ${location.state.buyer_id}`;
       var tempBalance = await queryExchange(query);
       setBalance(tempBalance.rows[0].wallet_balance);
 
-      query = `SELECT * FROM "payment_cards" WHERE "user_id" = ${location.state.buyer_id}`;
+      query = `SELECT * FROM payment_cards WHERE user_id = ${location.state.buyer_id}`;
       var result = await queryExchange(query);
       setNameOnCard(result.rows[0].name_on_card);
       setCvv(result.rows[0].cvv);
       setCardNumber(result.rows[0].card_number.slice(12, 17));
 
-      query = `SELECT * FROM "addresses" WHERE "user_id" = ${location.state.buyer_id}`;
+      query = `SELECT * FROM addresses WHERE user_id = ${location.state.buyer_id}`;
       result = await queryExchange(query);
       setAddresses(result.rows);
       setAddressId(result.rows[0].id);

@@ -43,13 +43,13 @@ function SellerHomePage() {
 
   useEffect(() => {
     async function fetchDetails() {
-      var query = `SELECT id FROM "sellers" WHERE phone_number = '${localStorage.getItem(
+      var query = `SELECT id FROM sellers WHERE phone_number = '${localStorage.getItem(
         "phone"
       )}'`;
       var sellerId = await queryExchange(query);
       sellerId = sellerId.rows[0].id;
       setSellerId(sellerId);
-      query = `SELECT seller_name, account_balance FROM "sellers" WHERE id = ${sellerId}`;
+      query = `SELECT seller_name, account_balance FROM sellers WHERE id = ${sellerId}`;
       var result = await queryExchange(query);
       setSellerName(result.rows[0].seller_name);
       setBalance(result.rows[0].account_balance);
@@ -328,14 +328,14 @@ function SellerHomePage() {
                   toast.info("Creating records...", {
                     position: toast.POSITION.TOP_RIGHT,
                   });
-                  var query = `SELECT id FROM "discounts" WHERE name='${discount}'`;
+                  var query = `SELECT id FROM discounts WHERE name='${discount}'`;
                   var discountId = await queryExchange(query);
                   try {
                     discountId = discountId.rows[0].id;
                   } catch (err) {
                     discountId = "NULL";
                   }
-                  query = `INSERT INTO "products" ("name", "image", "description", "category", "brand", "seller_id", "price", "left_in_stock", "discount_id") VALUES('${prodName}', '${image}', '${description}', ('${category}'), ('${brand}'), ${sellerId}, ${price}, ${quantity}, ${discountId});`;
+                  query = `INSERT INTO products (name, image, description, category, brand, seller_id, price, left_in_stock, discount_id) VALUES('${prodName}', '${image}', '${description}', ('${category}'), ('${brand}'), ${sellerId}, ${price}, ${quantity}, ${discountId});`;
                   const response = await queryExchange(query);
                   if (response.name && response.name === "error") {
                     console.log(response);

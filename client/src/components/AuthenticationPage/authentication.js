@@ -109,9 +109,7 @@ function AuthenticationPage({ match }) {
         localStorage.setItem("phone", phone);
 
         if (match.params.id === "0") {
-          const users = await queryExchange(
-            'select phone_number from "buyers"'
-          );
+          const users = await queryExchange("select phone_number from buyers");
           var phoneNumbers = [];
           users.rows.forEach((user) => {
             phoneNumbers.push(user.phone_number);
@@ -123,9 +121,7 @@ function AuthenticationPage({ match }) {
             window.location = "/buyer-signup";
           }
         } else {
-          const users = await queryExchange(
-            'select phone_number from "sellers"'
-          );
+          const users = await queryExchange("select phone_number from sellers");
           var phoneNumbers = [];
           users.rows.forEach((user) => {
             phoneNumbers.push(user.phone_number);
