@@ -11,8 +11,8 @@ Originally implemented in PostgreSQL, this application has been migrated to Sing
 The website and the database have been completely hosted online. Use the [link](https://tsunamideal-singlestoredb.herokuapp.com/) to run the application directly on your browser.
 
 To run it locally, follow the steps below:
-1. Clone the repository. In the root directory, create ```.env``` file with your own SingleStore HOST, PASSWORD and DATABASE fields.
-2. Initialize the SingleStore database by running:
+1. Clone the repository. All deployment files are inlcuded (for example, .env and firebase credentials).
+2. The database is already initialized. In order to start from the beginning and use a different workspace, add your database credentials in the uploaded .env file and initialize the SingleStore database by running:
 ```
 $ node initialize
 ```
