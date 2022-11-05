@@ -22,14 +22,7 @@ async function main() {
     console.error("ERROR", err);
     process.exit(1);
   }
-  // finally {
-  //   if (singleStoreConnection) {
-  //     await singleStoreConnection.end();
-  //   }
-  // }
   return singleStoreConnection;
 }
-
-// main();
 
 module.exports = main;

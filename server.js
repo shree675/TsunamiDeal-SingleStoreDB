@@ -31,7 +31,6 @@ app.post("/api/query", async (req, res) => {
     res.json({});
   }
   const result = await conn.execute(req.body.query);
-  // console.log(rows[0]);
   let resval;
   try {
     resval = {

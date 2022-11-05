@@ -83,23 +83,3 @@ CREATE TABLE `sellers` (
   `seller_name` varchar(255),
   `account_balance` decimal
 );
-
-ALTER TABLE `order_items` ADD FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`);
-
-ALTER TABLE `order_items` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
-
-ALTER TABLE `products` ADD FOREIGN KEY (`seller_id`) REFERENCES `sellers` (`id`);
-
-ALTER TABLE `addresses` ADD FOREIGN KEY (`user_id`) REFERENCES `buyers` (`id`);
-
-ALTER TABLE `products` ADD FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`id`);
-
-ALTER TABLE `buyers` ADD FOREIGN KEY (`id`) REFERENCES `payment_cards` (`user_id`);
-
-ALTER TABLE `cart_items` ADD FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
-
-ALTER TABLE `orders` ADD FOREIGN KEY (`user_id`) REFERENCES `buyers` (`id`);
-
-ALTER TABLE `orders` ADD FOREIGN KEY (`billing_address`) REFERENCES `addresses` (`id`);
-
-ALTER TABLE `cart_items` ADD FOREIGN KEY (`user_id`) REFERENCES `buyers` (`id`);

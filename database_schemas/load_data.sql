@@ -2,16 +2,16 @@ INSERT INTO `buyers`(`phone_number`, `first_name`, `last_name`, `wallet_balance`
 VALUES ('9876543210', 'Exorb', 'Tents', 4000.1);
 
 INSERT INTO `buyers`(`phone_number`, `first_name`, `last_name`, `wallet_balance`)
-VALUES ('9876543211', 'Priyanka', 'Chpra', 6000.1);
+VALUES ('9876543211', 'Moyses', 'Chpra', 6000.1);
 
 INSERT INTO `buyers`(`phone_number`, `first_name`, `last_name`, `wallet_balance`)
-VALUES ('9876543212', 'Deepika', 'padukone', 2000.1);
+VALUES ('9876543212', 'Deepika', 'Xenia', 2000.1);
 
 INSERT INTO `buyers`(`phone_number`, `first_name`, `last_name`, `wallet_balance`)
-VALUES ('9876543213', 'Kareena', 'Kapoor', 5000.1);
+VALUES ('9876543213', 'Kareena', 'Avitus', 5000.1);
 
 INSERT INTO `buyers`(`phone_number`, `first_name`, `last_name`, `wallet_balance`)
-VALUES ('9876543214', 'Hritik', 'Roshan', 8000.1);
+VALUES ('9876543214', 'Arun', 'Roshan', 8000.1);
 
 INSERT INTO `addresses`(`user_id`, `address_line1`, `address_line2`, `city`, `pincode`, `country`)
 VALUES (2251799813685252, 'Number 4 Teri Street', 'Block - 5', 'Agra', '560095', 'India');
@@ -47,10 +47,10 @@ INSERT INTO `payment_cards`(`user_id`, `name_on_card`, `card_number`, `cvv`)
 VALUES (2251799813685252, 'Sheetal S', '1234123412341234', '123');
 
 INSERT INTO `payment_cards`(`user_id`, `name_on_card`, `card_number`, `cvv`)
-VALUES (2251799813685250, 'Debeshee D', '2345234523452345', '234');
+VALUES (2251799813685250, 'Christabelle D', '2345234523452345', '234');
 
 INSERT INTO `payment_cards`(`user_id`, `name_on_card`, `card_number`, `cvv`)
-VALUES (2251799813685253, 'Harshitha K', '3456345634563456', '345');
+VALUES (2251799813685253, 'Lyndsea K', '3456345634563456', '345');
 
 INSERT INTO `payment_cards`(`user_id`, `name_on_card`, `card_number`, `cvv`)
 VALUES (2251799813685249, 'Shreetesh M', '4567456745674567', '456');
