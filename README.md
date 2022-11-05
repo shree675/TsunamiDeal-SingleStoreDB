@@ -38,3 +38,7 @@ $ npm run dev
 
 ## Databases Used
 SingleStoreDB has been used. This application has been migrated from PostgreSQL to SingleStore. However, the authentication and OTP functionalities have been implemented using Firebase services.
+
+## Architectural Diagram of the Database
+![image](https://user-images.githubusercontent.com/58718144/200113844-39089f12-e915-4495-a716-dc8236b28427.png)
+
