@@ -22,10 +22,6 @@ export async function searchFunction(
 
   var queryString = "SELECT * FROM products ";
 
-  // for ( let i = 0; i<categories.length; i++ ) {
-  //   console.log(categories[i])
-  // }
-
   if (categories !== null && categories.length > 0) {
     var categoryString = "";
     for (var i = 0; i < categories.length; i++) {
@@ -69,32 +65,7 @@ export async function searchFunction(
     }
   }
 
-  // var productIds = new Set();
-  // var category = ``;
-  // var brand = ``;
-  // if (searchString.includes("furniture")) category = `'furniture',`;
-  // if (searchString.includes("lighting")) category = category + `'lighting',`;
-  // if (searchString.includes("plants")) category = category + `'plants',`;
-  // if (searchString.includes("show_pieces"))
-  //   category = category + `'show_pieces',`;
-  // if (category != "") category = "(" + category.slice(0, -1) + ")";
-
-  // if (searchString.includes("home_centre")) brand = `'home_centre',`;
-  // if (searchString.includes("ddecor")) brand = brand + `'ddecor',`;
-  // if (searchString.includes("stylestop")) brand = brand + `'stylestop',`;
-  // if (brand != "") brand = "(" + brand.slice(0, -1) + ")";
-
-  // if (category != "" && brand != "")
-  //   queryString =
-  //     queryString +
-  //     ` WHERE "category" IN ` +
-  //     category +
-  //     ` AND "brand" IN` +
-  //     brand;
-  // else if (category != "")
-  //   queryString = queryString + ` WHERE "castegory" IN ` + category;
-  // else if (brand != "")
-  //   queryString = queryString + ` WHERE "brand" IN ` + brand;
+  
 
   if (sortPrice !== null && sortPrice !== "") {
     sortPrice = sortPrice === "decreasing" ? `DESC ` : `ASC `;
